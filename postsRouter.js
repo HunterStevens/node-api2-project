@@ -28,8 +28,16 @@ router.get('/:id', (req,res) =>{
 })
 
 router.get('/:id/comments', (req,res) =>{
-
-    
+    db.findPostComments(req.params.id)
+    .then(article =>{
+        if(article.length === 0){
+            res.status(404).json({ message: "The post with the specified ID does not exist." })
+        }
+        else{res.status(200).json(article);}
+    })
+    .catch(err =>{
+        res.status(500).json({ error: "The comments information could not be retrieved." });
+    })
 })
 
 router.post('/', (req,res) =>{
