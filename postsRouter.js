@@ -82,7 +82,19 @@ router.post('/:id/comments', (req,res) =>{
 })
 
 router.delete('/:id', (req,res) =>{
-    
+    db.remove(req.params.id)
+    .then(article =>{
+        if(article === 0){
+            res.status(404).json({ message: "The post with the specified ID does not exist." })
+        }
+        else{res.status(200).json(article);}
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            message:'There was an error while saving the comment to the database'
+        })
+    })
 })
 
 router.put('/:id', (req,res) =>{
