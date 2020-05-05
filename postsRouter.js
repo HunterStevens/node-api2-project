@@ -23,6 +23,7 @@ router.get('/:id', (req,res) =>{
         else{res.status(200).json(article);}
     })
     .catch(err =>{
+        console.log(err);
         res.status(500).json({ error: "The post information could not be retrieved." });
     })
 })
@@ -36,6 +37,7 @@ router.get('/:id/comments', (req,res) =>{
         else{res.status(200).json(article);}
     })
     .catch(err =>{
+        console.log(err);
         res.status(500).json({ error: "The comments information could not be retrieved." });
     })
 })
@@ -59,7 +61,24 @@ router.post('/', (req,res) =>{
 })
 
 router.post('/:id/comments', (req,res) =>{
-    
+    if(req.body.comment === null || req.body.comment === ""){
+        res.status(400).json({errorMessage: "Please provide title and contents for the post."});
+    }
+    else{
+        db.insertComment(req.body, req.params.id)
+        .then(article =>{
+            if(article.length === 0){
+                res.status(404).json({ message: "The post with the specified ID does not exist." })
+            }
+            else{res.status(200).json(article);}
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                message:'There was an error while saving the comment to the database'
+            })
+        })
+    }
 })
 
 router.delete('/:id', (req,res) =>{
@@ -67,6 +86,23 @@ router.delete('/:id', (req,res) =>{
 })
 
 router.put('/:id', (req,res) =>{
-    
+    if(req.body.title === null || req.body.title === "" || req.body.contents === null || req.body.contents ===""){
+        res.status(400).json({errorMessage: "Please provide title and contents for the post."});
+    }
+    else{
+        db.update(req.params.id, req.body)
+        .then(article =>{
+            if(article === 0){
+                res.status(404).json({ message: "The post with the specified ID does not exist." })
+            }
+            else{res.status(200).json(article);}
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                message:'There was an error while saving the post to the database'
+            })
+        })
+    }
 })
 module.exports = router;
