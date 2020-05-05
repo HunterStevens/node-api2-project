@@ -14,15 +14,31 @@ router.get('/', (req,res) =>{
     })
 })
 
+router.get('/:id', (req,res) =>{
+    
+})
+
 router.get('/:id/comments', (req,res) =>{
+
     
 })
 
 router.post('/', (req,res) =>{
-    db.insert(req.body)
-    .then(article =>{
-        res.status(200).json()
-    })
+    if(req.body.title === null || req.body.title === "" || req.body.contents === null || req.body.contents ===""){
+        res.status(400).json({errorMessage: "Please provide title and contents for the post."});
+    }
+    else{
+        db.insert(req.body)
+        .then(article =>{
+            res.status(200).json(article)
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                message:'There was an error while saving the post to the database'
+            })
+        })
+    }
 })
 
 router.post('/:id/comments', (req,res) =>{
