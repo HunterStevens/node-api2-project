@@ -61,23 +61,34 @@ router.post('/', (req,res) =>{
 })
 
 router.post('/:id/comments', (req,res) =>{
-    if(req.body.comment === null || req.body.comment === ""){
+    if(req.body.text === null || req.body.text === ""){
         res.status(400).json({errorMessage: "Please provide title and contents for the post."});
     }
     else{
-        db.insertComment(req.body, req.params.id)
+        db.findById(req.params.id)
         .then(article =>{
             if(article.length === 0){
                 res.status(404).json({ message: "The post with the specified ID does not exist." })
             }
-            else{res.status(200).json(article);}
-        })
-        .catch(err =>{
-            console.log(err);
-            res.status(500).json({
-                message:'There was an error while saving the comment to the database'
+            else{
+                const commentText = req.body;
+                commentText.post_id = req.params.id;
+                    db.insertComment(commentText)
+                    .then(article =>{
+                            res.status(200).json(article);
+                    })
+                    .catch(err =>{
+                        console.log("post request error: ", err);
+                        res.status(500).json({ error: "The post information could not be retrieved." })
+                
+                    })
+                }
             })
-        })
+            .catch(err =>{
+                console.log(err);
+                res.status(500).json({ error: "The post information could not be retrieved." });
+            })
+
     }
 })
 
