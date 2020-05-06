@@ -85,7 +85,8 @@ router.post('/:id/comments', (req,res) =>{
                 commentText.post_id = req.params.id;
                     db.insertComment(commentText)
                     .then(article =>{
-                        db.findPostComments(article.id)
+                        console.log(article);
+                        db.findCommentById(article.id)
                         .then(article =>{
                             res.status(200).json(article)
                         })
