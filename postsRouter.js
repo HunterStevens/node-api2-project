@@ -48,8 +48,18 @@ router.post('/', (req,res) =>{
     }
     else{
         db.insert(req.body)
-        .then(article =>{
-            res.status(200).json(article)
+        .then(newArticle =>{
+            db.findById(newArticle.id)
+    .then(article =>{
+        if(article.length === 0){
+            res.status(404).json({ message: "The post with the specified ID does not exist." })
+        }
+        else{res.status(200).json(article);}
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({ error: "The post information could not be retrieved." });
+    })
         })
         .catch(err =>{
             console.log(err);
@@ -75,7 +85,14 @@ router.post('/:id/comments', (req,res) =>{
                 commentText.post_id = req.params.id;
                     db.insertComment(commentText)
                     .then(article =>{
-                            res.status(200).json(article);
+                        db.findPostComments(article.id)
+                        .then(article =>{
+                            res.status(200).json(article)
+                        })
+                        .catch(err =>{
+                            console.log(err);
+                            res.status(500).json({ error: "The comments information could not be retrieved." });
+                        })
                     })
                     .catch(err =>{
                         console.log("post request error: ", err);
