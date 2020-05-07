@@ -98,7 +98,6 @@ router.post('/:id/comments', (req,res) =>{
                     .catch(err =>{
                         console.log("post request error: ", err);
                         res.status(500).json({ error: "The post information could not be retrieved." })
-                
                     })
                 }
             })
