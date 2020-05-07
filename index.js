@@ -2,6 +2,8 @@ const express = require('express');
 const server = express();
 const postsRouter = require('./postsRouter');
 
+const port = process.env.PORT || 8000;
+
 server.use(express.json());
 
 server.get('/', (req, res) => {
@@ -13,4 +15,4 @@ server.get('/', (req, res) => {
 
 server.use('/api/posts', postsRouter);
 
-server.listen(8000, () => console.log('Node-API2 project up and running!'));
+server.listen(port, () => console.log('Node-API2 project up and running!'));
